@@ -4,9 +4,12 @@ layout: default
 
 {% include site-header.html %}
 
-<main class="main  container{% if page.heads == true %}  main--with-toc{% endif %}{% if page.aside == true %}  main--with-aside{% endif %}">
+{% assign show_toc = false %}
+{% if page.heads == true and content contains '<h2' %}{% assign show_toc = true %}{% endif %}
 
-  {% if page.heads == true %}{% include site-leftside.html %}{% endif %}
+<main class="main  container{% if show_toc %}  main--with-toc{% endif %}{% if page.aside == true %}  main--with-aside{% endif %}">
+
+  {% if show_toc %}{% include site-leftside.html %}{% endif %}
 
   <article class="article  article--post  content">
 

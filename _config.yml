@@ -25,6 +25,7 @@ exclude:
 - .jekyll-cache
 - vendor/ # Local `bundle install --path vendor/bundle`; this list replaces Jekyll's default excludes
 - .bundle/
+- tools/ # Local helper scripts such as tools/md2post.py
 
 # 2. Installed Gems
 plugins:
@@ -111,6 +112,7 @@ encoding: utf-8 # Make sure the encoding is right
 lang: en-GB # Set the site language
 title: "FirstBlog" # Site name or title, also used in jekyll-seo-tag
 logo: "/assets/logos/logo.svg" # Site logo, also used in jekyll-seo-tag
+default_feature_image: "/assets/default-feature.svg" # Banner and list thumbnail for posts whose feature_image is empty
 description: "What I'm thinking these days...." # Site description and default description, also used in jekyll-seo-tag
 url: "https://programmedrn.github.io" # Site url, also used in jekyll-seo-tag
 baseurl: "/FirstBlog"

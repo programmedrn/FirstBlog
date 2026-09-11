@@ -5,11 +5,13 @@ layout: default
 {% include site-header.html %}
 
 {% assign latest = site.posts.first %}
+{% assign show_toc = false %}
+{% if latest.heads == true and latest.content contains '<h2' %}{% assign show_toc = true %}{% endif %}
 
-<main class="main  container{% if latest.heads == true %}  main--with-toc{% endif %}">
+<main class="main  container{% if show_toc %}  main--with-toc{% endif %}">
 
   {% if latest %}
-    {% if latest.heads == true %}
+    {% if show_toc %}
       <aside class="toc" aria-label="Table of contents">
         {% include post-nav.html html=latest.content %}
       </aside>

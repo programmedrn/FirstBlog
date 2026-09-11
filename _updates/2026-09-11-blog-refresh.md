@@ -18,6 +18,8 @@ A full refresh of how the blog looks and works. Post text was not changed.
 - Sticky header with a working menu on mobile.
 - Post pages: table of contents on the left, a comfortable reading width, date and tags under the title.
 - Post list (Thoughts): thumbnails, tags and a two-line summary per post.
+- Posts without their own feature image get a default banner and thumbnail in the same style as the logo.
+- Notes written elsewhere can be imported as posts with their tags as categories and their line breaks kept.
 - Categories page: compact lists with post counts.
 - New **Update** menu for change notes like this one.
 

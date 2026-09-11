@@ -3,21 +3,23 @@
 {% else %}
   {% assign posts = site.posts %}
 {% endif %}
+{% assign default_feature_image = site.default_feature_image | relative_url %}
 
 <section class="section">
   <ul class="list  list--posts">
     {% for post in posts %}
+      {% assign thumb = post.feature_image | default: default_feature_image %}
       <li class="item  item--post">
         <article class="post-card">
-          {% if post.feature_image %}
+          {% if thumb %}
             <a class="post-card__thumb" href="{{ post.url | relative_url }}" tabindex="-1" aria-hidden="true">
-              <img src="{{ post.feature_image }}" alt="" loading="lazy">
+              <img src="{{ thumb }}" alt="" loading="lazy">
             </a>
           {% endif %}
           <div class="post-card__body">
             <h2 class="post-card__title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
             {% include post-meta.html post=post %}
-            <p class="post-card__excerpt">{{ post.excerpt | strip_html | strip_newlines | strip | truncatewords: 40 }}</p>
+            <p class="post-card__excerpt">{{ post.excerpt | strip_html | normalize_whitespace | truncatewords: 40 }}</p>
           </div>
         </article>
       </li>

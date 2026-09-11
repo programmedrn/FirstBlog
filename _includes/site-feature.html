@@ -1,14 +1,18 @@
 {% assign feature_text = page.feature_text %}
 {% assign feature_image = page.feature_image %}
+{% assign default_feature_image = site.default_feature_image | relative_url %}
 {% if page.collectionpage %}
   {% assign collectiondata = site.collections | where: "label", page.collectionpage | first %}
   {% assign feature_text = collectiondata.feature_text %}
   {% assign feature_image = collectiondata.feature_image %}
 {% endif %}
+{% if page.collection == "posts" %}
+  {% assign feature_image = feature_image | default: default_feature_image %}
+{% endif %}
 {% if page.layout == "home" and site.posts.size > 0 %}
   {% assign latest_post = site.posts.first %}
   {% assign feature_text = latest_post.feature_text %}
-  {% assign feature_image = latest_post.feature_image %}
+  {% assign feature_image = latest_post.feature_image | default: default_feature_image %}
 {% endif %}
 
 {% if feature_text or feature_image %}
