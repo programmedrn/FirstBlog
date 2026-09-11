@@ -5,6 +5,7 @@
     <!-- General meta -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
 
     {% if page.indexing == false %}
       <meta name="robots" content="noindex">
@@ -28,7 +29,7 @@
     {% endif %}
 
     <link rel="manifest" href="{{ '/manifest.json' | relative_url }}">
-    <meta name="theme-color" content="{{ site.manifest.theme_color | default: '#242e2b' }}"/>
+    <meta name="theme-color" content="{{ site.manifest.theme_color | default: '#0b141b' }}"/>
 
     {% if site.css_inline == true %}
       {% include site-styles.html %}
@@ -49,6 +50,8 @@
     {% include site-icons.svg %}
 
     {{ content }}
+
+    <script src="{{ '/assets/scripts/site.js' | relative_url }}" defer></script>
 
     {% if site.service_worker != false %}{% include site-sw.html %}{% endif %}
 

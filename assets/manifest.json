@@ -7,8 +7,8 @@ sitemap: false
   "lang": "{{ site.lang | default: "en-US" }}",
   "name": "{{ site.title }}",
   "short_name": "{{ site.short_name | default: site.title | replace: ' ', '' }}",
-  "theme_color": "{{ site.manifest.theme_color | default: '#24292e' }}",
-  "background_color": "{{ site.manifest.background_color | default: '#ffffff' }}",
+  "theme_color": "{{ site.manifest.theme_color | default: '#0b141b' }}",
+  "background_color": "{{ site.manifest.background_color | default: '#0b141b' }}",
   {% if site.favicons -%}
     "icons": [
       {% for icon in site.favicons -%}
@@ -19,6 +19,7 @@ sitemap: false
       {% endfor %}
     ],
   {% endif -%}
-  "start_url": "/",
+  "start_url": "{{ '/' | relative_url }}",
+  "scope": "{{ '/' | relative_url }}",
   "display": "standalone"
 }

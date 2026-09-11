@@ -4,18 +4,20 @@
       {% assign name = network[0] %}
       {% assign id = network[0] | downcase | remove: " " %}
       {% assign url = site.url | append: site.baseurl | append: page.url %}
+      {% assign encoded_url = url | url_encode %}
+      {% assign title = page.title | url_encode %}
       {% assign color = network[1] %}
 
       {% capture share_link %}
-        {%- if id contains "twitter" %}https://twitter.com/intent/tweet/?url={{ url }}&text={{ page.title | uri_escape }}{% if site.twitter.username %}&via={{ site.twitter.username }}{% endif %}{% endif -%}
-        {%- if id contains "facebook" %}https://facebook.com/sharer/sharer.php?u={{ url }}{% endif -%}
-        {%- if id contains "pinterest" %}https://pinterest.com/pin/create/button/?url={{ url }}&description={{ page.title }}&media={{ page.image }}{% endif -%}
-        {%- if id contains "linkedin" %}https://www.linkedin.com/shareArticle?url={{ url }}&title={{ page.title }}&source={{ site.title }}&mini=true{% endif -%}
-        {%- if id contains "tumblr" %}https://tumblr.com/widgets/share/tool?canonicalUrl={{ url }}&tags={{ page.category }}&caption={{ page.title }}{% endif -%}
-        {%- if id contains "reddit" %}https://reddit.com/submit?url={{ url }}&title={{ page.title }}&resubmit=true{% endif -%}
-        {%- if id contains "hackernews" %}https://news.ycombinator.com/submitlink?u={{ url }}&t={{ page.title }}{% endif -%}
-        {%- if id contains "designernews" %}https://www.designernews.co/submit?url={{ url }}&title={{ page.title }}{% endif -%}
-        {%- if id contains "email" %}mailto:?subject={{ page.title }}&body={{ url | prepend: "Hey, check out this: "}}{% endif -%}
+        {%- if id contains "twitter" %}https://twitter.com/intent/tweet/?url={{ encoded_url }}&text={{ title }}{% if site.twitter.username %}&via={{ site.twitter.username }}{% endif %}{% endif -%}
+        {%- if id contains "facebook" %}https://facebook.com/sharer/sharer.php?u={{ encoded_url }}{% endif -%}
+        {%- if id contains "pinterest" %}https://pinterest.com/pin/create/button/?url={{ encoded_url }}&description={{ title }}&media={{ page.image | url_encode }}{% endif -%}
+        {%- if id contains "linkedin" %}https://www.linkedin.com/shareArticle?url={{ encoded_url }}&title={{ title }}&source={{ site.title | url_encode }}&mini=true{% endif -%}
+        {%- if id contains "tumblr" %}https://tumblr.com/widgets/share/tool?canonicalUrl={{ encoded_url }}&tags={{ page.category | url_encode }}&caption={{ title }}{% endif -%}
+        {%- if id contains "reddit" %}https://reddit.com/submit?url={{ encoded_url }}&title={{ title }}&resubmit=true{% endif -%}
+        {%- if id contains "hackernews" %}https://news.ycombinator.com/submitlink?u={{ encoded_url }}&t={{ title }}{% endif -%}
+        {%- if id contains "designernews" %}https://www.designernews.co/submit?url={{ encoded_url }}&title={{ title }}{% endif -%}
+        {%- if id contains "email" %}mailto:?subject={{ title }}&body={{ url | prepend: "Hey, check out this: " | url_encode }}{% endif -%}
       {% endcapture %}
 
       {% include button.html text=name icon=id link=share_link color=color %}

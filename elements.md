@@ -21,11 +21,11 @@ aside: true
 
 <small>A small element</small>
 
-[A link](https://david.darn.es "A link")
+[A link](https://example.com "A link")
 
 Lorem ipsum dolor sit amet, consectetur adip* isicing elit, sed do eiusmod *tempor incididunt ut labore et dolore magna aliqua.
 
-Duis aute irure dolor in [A link](https://david.darn.es "A link") reprehenderit in voluptate velit esse cillum **bold text** dolore eu fugiat nulla pariatur. Excepteur span element sint occaecat cupidatat non proident, sunt _italicised text_ in culpa qui officia deserunt mollit anim id `some code` est laborum.
+Duis aute irure dolor in [A link](https://example.com "A link") reprehenderit in voluptate velit esse cillum **bold text** dolore eu fugiat nulla pariatur. Excepteur span element sint occaecat cupidatat non proident, sunt _italicised text_ in culpa qui officia deserunt mollit anim id `some code` est laborum.
 
 * An item
 * An item
@@ -78,14 +78,6 @@ blockquote.innerHTML = bolden("Mr. Sullivan", blockquote.innerHTML)
 
 ## HTML Includes
 
-### Contact form
-
-{% include site-form.html %}
-
-``` html
-{% raw %}{% include site-form.html %}{% endraw %}
-```
-
 ### Demo map embed
 
 {% include map.html id="1UT-2Z-Vg_MG_TrS5X2p8SthsJhc" title="Coffee shop map" %}
@@ -96,22 +88,22 @@ blockquote.innerHTML = bolden("Mr. Sullivan", blockquote.innerHTML)
 
 ### Button include
 
-{% include button.html text="A button" link="https://david.darn.es" %}
+{% include button.html text="A button" link="https://example.com" %}
 
-{% include button.html text="A button with icon" link="https://twitter.com/daviddarnes" icon="twitter" %}
+{% include button.html text="A button with icon" link="https://github.com/programmedrn" icon="github" %}
 
 ``` html
-{% raw %}{% include button.html text="A button" link="https://david.darn.es" %}
-{% include button.html text="A button with icon" link="https://twitter.com/daviddarnes" icon="twitter" %}{% endraw %}
+{% raw %}{% include button.html text="A button" link="https://example.com" %}
+{% include button.html text="A button with icon" link="https://github.com/programmedrn" icon="github" %}{% endraw %}
 ```
 
 ### Icon include
 
-{% include icon.html id="twitter" title="twitter" %} [{% include icon.html id="linkedin" title="twitter" %}](https://www.linkedin.com/in/daviddarnes)
+{% include icon.html id="github" title="github" %} [{% include icon.html id="rss" title="rss" %}]({{ '/feed.xml' | relative_url }})
 
 ``` html
-{% raw %}{% include icon.html id="twitter" title="twitter" %}
-[{% include icon.html id="linkedin" title="twitter" %}](https://www.linkedin.com/in/daviddarnes){% endraw %}
+{% raw %}{% include icon.html id="github" title="github" %}
+[{% include icon.html id="rss" title="rss" %}]({{ '/feed.xml' | relative_url }}){% endraw %}
 ```
 
 ### Video include

@@ -1,40 +1,39 @@
 @import "colors-theme";
 
-// Background colours
+// Colours: every value comes from the theme imported above
 $backgroundColour: $backgroundColor !default;
-$codeBackgroundColour: #fafafa !default;
-$featureBackgroundColour: #f9fafa !default;
-$accentColour: #05bf85 !default;
+$surfaceColour: $surfaceColor !default;
+$codeBackgroundColour: $codeBackgroundColor !default;
+$borderColour: $borderColor !default;
+$featureBackgroundColour: $featureBackgroundColor !default;
+$accentColour: $accentColor !default;
 
 // Text colours
-$headingColour: #242e2b !default;
-$bodyColour: #384743 !default;
-$linkColour: #05bf85 !default;
-$hoverColour: #008000 !default;
-$focusColour: #fa407a !default;
-$captionColour: #a8adac !default;
+$headingColour: $headingColor !default;
+$bodyColour: $bodyColor !default;
+$captionColour: $captionColor !default;
+$inlineCodeColour: $inlineCodeColor !default;
+$linkColour: $linkColor !default;
+$hoverColour: $hoverColor !default;
+$focusColour: $focusColor !default;
 $white: #ffffff !default;
 
-// Typography
-$bodytype: (
-  font-family: "Georgia, serif",
-  regular: 400,
-  bold: 700,
-  italic: italic,
-  cap-height: 0.75
-) !default;
+// Typography: D2Coding is declared in _includes/site-fonts.html
+$fontStack: "D2Coding", "D2 Coding", ui-monospace, SFMono-Regular, Menlo, Consolas, "Malgun Gothic", monospace !default;
 
-$headingtype: (
-  font-family: '"Merriweather", serif',
-  regular: 400,
-  bold: 700,
-  cap-height: 0.75
-) !default;
+// Layout
+$containerWidth: 80rem !default;
+$contentWidth: 46rem !default;
+$sidebarWidth: 13rem !default;
+$headerHeight: 3.75rem !default;
 
-$monospacetype: (
-  font-family: "Menlo, monospace",
-  regular: 400,
-  cap-height: 0.68
-) !default;
+// Breakpoints
+$break-md: 48em !default; // 768px
+$break-lg: 64em !default; // 1024px
+$break-xl: 80em !default; // 1280px
 
-// TIP: Load custom fonts in _config.yaml
+@mixin breakpoint($min-width) {
+  @media screen and (min-width: $min-width) {
+    @content;
+  }
+}

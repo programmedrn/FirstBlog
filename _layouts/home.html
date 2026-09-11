@@ -1,0 +1,44 @@
+---
+layout: default
+---
+
+{% include site-header.html %}
+
+{% assign latest = site.posts.first %}
+
+<main class="main  container{% if latest.heads == true %}  main--with-toc{% endif %}">
+
+  {% if latest %}
+    {% if latest.heads == true %}
+      <aside class="toc" aria-label="Table of contents">
+        {% include post-nav.html html=latest.content %}
+      </aside>
+    {% endif %}
+
+    <article class="article  article--post  content">
+
+      <header class="article__header">
+        <p class="article__eyebrow">Latest post</p>
+        <h1 class="article__title"><a href="{{ latest.url | relative_url }}">{{ latest.title }}</a></h1>
+        {% include post-meta.html post=latest %}
+      </header>
+
+      <div class="markdown-body">
+        {{ latest.content }}
+      </div>
+
+      <footer class="article__footer  article__footer--home">
+        <a class="button" href="{{ latest.url | relative_url }}">Open post &amp; comments</a>
+        <a class="button  button--ghost" href="{{ '/blog/' | relative_url }}">All posts &rarr;</a>
+      </footer>
+
+    </article>
+  {% else %}
+    <div class="content">
+      <p>No posts yet.</p>
+    </div>
+  {% endif %}
+
+</main>
+
+{% include site-footer.html %}

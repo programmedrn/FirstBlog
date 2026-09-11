@@ -1,28 +1,54 @@
-// for post-nav.html
-// and other custom
-.index {
-    // color: #000000 !important;
+// for post-nav.html (table of contents on posts)
+
+.toc {
+  display: none;
+  min-width: 0;
+
+  @include breakpoint($break-lg) {
+    display: block;
+  }
 }
 
-.h2index, .h3index {
-
-    a, a:visited {
-        color: rgba(63, 104, 218, 0.867);
-        text-decoration: none;
-        background-image: none !important;
-    }
-    
-    a:hover{
-        color: rgba(63, 104, 218, 0.867);
-        text-decoration: rgba(63, 104, 218, 0.867) solid underline;
-    }
+.toc__nav {
+  position: sticky;
+  top: $headerHeight + 1.5rem;
+  max-height: calc(100vh - #{$headerHeight + 3rem});
+  overflow-y: auto;
+  padding-right: .5rem;
+  font-size: .82rem;
 }
 
-.h2index {
-    text-indent: -1em;
+.toc__title {
+  margin: 0 0 .6rem;
+  color: $captionColour;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
-.h3index {
-    text-indent: .3em;
-    font-size: 90%
+.toc__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid $borderColour;
+}
+
+.toc__item a {
+  display: block;
+  margin-left: -1px;
+  padding: .28rem 0 .28rem .9rem;
+  border-left: 1px solid transparent;
+  color: $captionColour;
+  line-height: 1.45;
+
+  &:hover {
+    border-left-color: $linkColour;
+    color: $headingColour;
+  }
+}
+
+.toc__item--h3 a {
+  padding-left: 1.75rem;
+  font-size: .78rem;
 }

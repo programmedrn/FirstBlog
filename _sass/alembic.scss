@@ -1,13 +1,14 @@
 @charset "utf-8";
 
-// Import frameworks & theme styles
+// Import theme styles
+// Layout uses plain CSS flexbox/grid (Sassline and the flexbox mixins are no longer used)
 @import
   "colors",
-  "index",
-  "normalize",
   "settings",
-  "sassline-base",
+  "normalize",
+  "base",
+  "markdown",
   "syntax",
-  "flex",
+  "index",
   "theme"
 ;

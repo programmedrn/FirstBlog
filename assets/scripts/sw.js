@@ -71,7 +71,7 @@ self.addEventListener("fetch", event => {
   }
 
   // Default url returned if page isn't cached
-  let offlineAsset = "/offline/";
+  let offlineAsset = "{{ '/offline/' | relative_url }}";
 
   if (request.url.match(/\.(jpe?g|png|gif|svg)$/)) {
     // If url requested is an image and isn't cached, return default offline image

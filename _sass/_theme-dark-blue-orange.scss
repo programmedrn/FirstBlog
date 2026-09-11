@@ -1,6 +1,6 @@
 // Refered https://coolors.co/palette/8ecae6-219ebc-023047-ffb703-fb8500
-$theme_color_white: #ffffff !default;
-$theme_color_plain: #c2c2c2 !default;
+$theme_color_white: #f2f5f7 !default;
+$theme_color_plain: #c5d0d8 !default;
 $theme_color_whitey: #fafafa !default;
 
 $theme_color_bright_blue: #8ecae6 !default;
@@ -12,25 +12,30 @@ $theme_color_orange: #fb8500 !default;
 $theme_color_dark_orange: #854700 !default;
 
 $theme_color_bright_gray: #c9c9c9 !default;
-$theme_color_gray: #8b8b8b !default;
+$theme_color_gray: #8c9ba7 !default;
 $theme_color_dark_gray: #333333 !default;
 
-$theme_color_black: #001404 !default;
+$theme_color_black: #0b141b !default;   // page background
+$theme_color_surface: #101c25 !default; // header, cards, sidebars
+$theme_color_code: #070d12 !default;    // code blocks
+$theme_color_border: #1f303c !default;
 
 // Colors be used as
 $backgroundColor: $theme_color_black !default;
-$codeBackgroundColor: $theme_color_whitey !default;
-$featureBackgroundColor: $theme_color_bright_gray !default;
+$surfaceColor: $theme_color_surface !default;
+$codeBackgroundColor: $theme_color_code !default;
+$borderColor: $theme_color_border !default;
+$featureBackgroundColor: $theme_color_surface !default;
 
 $accentColor: $theme_color_blue !default;
 
 // Text Colors
 $headingColor: $theme_color_white !default;
 $bodyColor: $theme_color_plain !default;
+$captionColor: $theme_color_gray !default;
+$inlineCodeColor: $theme_color_bright_blue !default;
 
 $linkColor: $theme_color_bright_orange !default;
 $hoverColor: $theme_color_orange !default;
 
 $focusColor: $theme_color_bright_blue !default;
-
-$captionColor: $theme_color_dark_blue !default;

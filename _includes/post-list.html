@@ -1,43 +1,28 @@
 {% if paginator.posts %}
-  <section class="section  typeset">
-    <ul class="list  list--posts">
-      {% for page in paginator.posts %}
-        {% assign feature_image = page.feature_image %}
-        {% if page.collectionpage %}
-          {% assign feature_image = collectiondata.feature_image %}
-        {% endif %}
-        <li class="item  item--post">
-          <div>
-            <article class="article article--post">
-              <div class="thumbnail-wrapper" style="">
-                <img class="thumbnail" {% if feature_image %} src="{{feature_image}}" {% endif %}>
-              </div>
-              <div class="ellipsis">
-                <h2><a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a></h2>
-                {% include post-meta.html %}
-                {{ page.excerpt | markdownify | truncatewords: 60 }}
-              </div>
-            </article>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-    {% include post-pagination.html %}
-  </section>
+  {% assign posts = paginator.posts %}
 {% else %}
-  <section class="section  typeset">
-    <ul class="list  list--posts">
-      {% for page in site.posts %}
-        <li class="item  item--post">
-          <article class="article  article--post">
-
-            <h2><a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a></h2>
-            {% include post-meta.html %}
-            {{ page.excerpt | markdownify | truncatewords: 60 }}
-
-          </article>
-        </li>
-      {% endfor %}
-    </ul>
-  </section>
+  {% assign posts = site.posts %}
 {% endif %}
+
+<section class="section">
+  <ul class="list  list--posts">
+    {% for post in posts %}
+      <li class="item  item--post">
+        <article class="post-card">
+          {% if post.feature_image %}
+            <a class="post-card__thumb" href="{{ post.url | relative_url }}" tabindex="-1" aria-hidden="true">
+              <img src="{{ post.feature_image }}" alt="" loading="lazy">
+            </a>
+          {% endif %}
+          <div class="post-card__body">
+            <h2 class="post-card__title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+            {% include post-meta.html post=post %}
+            <p class="post-card__excerpt">{{ post.excerpt | strip_html | strip_newlines | strip | truncatewords: 40 }}</p>
+          </div>
+        </article>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if paginator.posts %}{% include post-pagination.html %}{% endif %}
+</section>

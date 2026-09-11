@@ -5,10 +5,15 @@
   {% assign feature_text = collectiondata.feature_text %}
   {% assign feature_image = collectiondata.feature_image %}
 {% endif %}
+{% if page.layout == "home" and site.posts.size > 0 %}
+  {% assign latest_post = site.posts.first %}
+  {% assign feature_text = latest_post.feature_text %}
+  {% assign feature_image = latest_post.feature_image %}
+{% endif %}
 
 {% if feature_text or feature_image %}
-  <div class="feature"{% if feature_image %} style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.7)), url({{ feature_image }})"{% endif %}>
-    <div class="container  typeset">
+  <div class="feature{% if feature_image %}  feature--image{% endif %}"{% if feature_image %} style="background-image: url('{{ feature_image }}')"{% endif %}>
+    <div class="container  feature__inner">
       {{ feature_text | markdownify }}
     </div>
   </div>

@@ -1,0 +1,24 @@
+---
+title: Update
+permalink: /update/
+excerpt: "Change log for this blog"
+---
+
+{% assign updates = site.updates | sort: "date" | reverse %}
+
+<p class="article__lead">Changes made to this blog, newest first.</p>
+
+{% if updates.size > 0 %}
+<ul class="list  list--compact">
+  {% for update in updates %}
+    <li class="item">
+      <a class="compact-post" href="{{ update.url | relative_url }}">
+        <span class="compact-post__title">{{ update.title }}</span>
+        <time datetime="{{ update.date | date_to_xmlschema }}">{{ update.date | date: "%Y-%m-%d" }}</time>
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No updates yet.</p>
+{% endif %}

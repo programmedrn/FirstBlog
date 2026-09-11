@@ -1,33 +1,26 @@
-<!-- Only shows h2 and h3 tags from content in order -->
-<nav style="font-size:80% !important">
-  <h5 class="index">Index</h5>
-  <ul style="list-style: none;">
-    {% assign h2_open_starts = content | split: '<h2' %}
-    {% assign h2len = h2_open_starts.size | minus: 1 %}
-    {% for i in (1..h2len) %}
-      {% assign h2_open_end = h2_open_starts[i] | split: '>' %}
-      {% assign h2_id_start = h2_open_end[0] | split: 'id="' %}
-      {% assign h2_id = h2_id_start[1] | split: '"' %}
-      {% assign h2_content_array = h2_open_end[1] | split: '</h2' %}
-      {% assign h2_title = h2_content_array[0] %}
-      <li class="h2index">
-        <a href="#{{ h2_id }}">{{ h2_title }}</a>
-      </li>
+<!-- Only shows h2 and h3 tags from content in order; pass html=... to build it from other content -->
+{% assign toc_html = include.html | default: content %}
+{% if toc_html contains '<h2' %}
+<nav class="toc__nav">
+  <p class="toc__title">Index</p>
+  <ul class="toc__list">
+    {% assign h2_chunks = toc_html | split: '<h2' %}
+    {% for h2_chunk in h2_chunks offset: 1 %}
+      {% assign h2_inner = h2_chunk | split: '</h2>' | first %}
+      {% assign h2_attrs = h2_inner | split: '>' | first %}
+      {% assign h2_id = h2_attrs | split: 'id="' | last | split: '"' | first %}
+      {% assign h2_title = h2_inner | remove_first: h2_attrs | remove_first: '>' | strip_html | strip %}
+      <li class="toc__item  toc__item--h2"><a href="#{{ h2_id }}">{{ h2_title }}</a></li>
 
-      {% assign h3_open_starts = h2_open_starts[i] | split: '<h3' %}
-      {% assign h3len = h3_open_starts.size | minus: 1 %}
-      {% for i in (1..h3len) %}
-        {% assign h3_open_end = h3_open_starts[i] | split: '>' %}
-        {% assign h3_id_start = h3_open_end[0] | split: 'id="' %}
-        {% assign h3_id = h3_id_start[1] | split: '"' %}
-        {% assign h3_content_array = h3_open_end[1] | split: '</h3' %}
-        {% assign h3_title = h3_content_array[0] %}
-        <li class="h3index">
-          <a href="#{{ h3_id }}">{{h3_title}}</a>
-        </li>
+      {% assign h3_chunks = h2_chunk | split: '<h3' %}
+      {% for h3_chunk in h3_chunks offset: 1 %}
+        {% assign h3_inner = h3_chunk | split: '</h3>' | first %}
+        {% assign h3_attrs = h3_inner | split: '>' | first %}
+        {% assign h3_id = h3_attrs | split: 'id="' | last | split: '"' | first %}
+        {% assign h3_title = h3_inner | remove_first: h3_attrs | remove_first: '>' | strip_html | strip %}
+        <li class="toc__item  toc__item--h3"><a href="#{{ h3_id }}">{{ h3_title }}</a></li>
       {% endfor %}
-      
     {% endfor %}
-
   </ul>
 </nav>
+{% endif %}

@@ -1,9 +1,15 @@
-<nav class="nav  nav--social">
+<nav class="nav  nav--social" aria-label="Social links">
   {% for link in site.social_links %}
     {% if link[1] != blank %}
-      {% assign id = link[0] | downcase %}
-      <a href="{{ link[1] }}">
-        {% include icon.html id=id title=id %}
+      {% assign label = link[0] %}
+      {% assign id = label | downcase %}
+      {% if link[1] contains '://' %}
+        {% assign href = link[1] %}
+      {% else %}
+        {% assign href = link[1] | relative_url %}
+      {% endif %}
+      <a href="{{ href }}" aria-label="{{ label }}">
+        {% include icon.html id=id title=label %}
       </a>
     {% endif %}
   {% endfor %}

@@ -1,8 +1,29 @@
+# Jekyll build output and caches
 _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
-alembic-jekyll-theme-*.gem
+
+# Ruby / Bundler (the github-pages gem pins versions, so the lockfile stays local)
 Gemfile.lock
 **/Gemfile.lock
+.bundle/
+vendor/
 
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Personal editor settings
+.vscode/
+.idea/
+
+# OS files (incl. Windows metadata created when copying files into WSL)
+.DS_Store
+Thumbs.db
+desktop.ini
+*:Zone.Identifier
+
+# Claude Code
+.claude/

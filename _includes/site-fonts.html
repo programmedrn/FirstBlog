@@ -1,3 +1,22 @@
+<!-- D2Coding by NAVER, SIL Open Font License 1.1 (see /assets/fonts/OFL.txt). Self-hosted, lossless WOFF2 of v1.3.3 -->
+<link rel="preload" href="{{ '/assets/fonts/D2Coding-Regular.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face {
+    font-family: "D2Coding";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local("D2Coding"), url("{{ '/assets/fonts/D2Coding-Regular.woff2' | relative_url }}") format("woff2");
+  }
+  @font-face {
+    font-family: "D2Coding";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: local("D2Coding Bold"), local("D2Coding-Bold"), url("{{ '/assets/fonts/D2Coding-Bold.woff2' | relative_url }}") format("woff2");
+  }
+</style>
+
 {% if site.fonts.font_urls %}
     {% for font in site.fonts.font_urls %}
         <link rel="preload" as="style" href="{{ font }}" />

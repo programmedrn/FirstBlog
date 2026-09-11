@@ -1,0 +1,373 @@
+// Rendered Markdown: post and page bodies
+
+.markdown-body {
+  color: $bodyColour;
+  line-height: 1.8;
+  overflow-wrap: break-word;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p,
+  ul,
+  ol,
+  dl,
+  blockquote,
+  table,
+  details,
+  pre,
+  div.highlighter-rouge,
+  figure.highlight {
+    margin: 0 0 1.25rem;
+  }
+
+  // Headings
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 2.5rem 0 1rem;
+    color: $headingColour;
+    line-height: 1.4;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    scroll-margin-top: $headerHeight + 1.5rem;
+  }
+
+  h1,
+  h2 {
+    padding-bottom: .4rem;
+    border-bottom: 1px solid $borderColour;
+  }
+
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.45rem; }
+  h3 { font-size: 1.2rem; }
+  h4 { font-size: 1.05rem; }
+  h5 { font-size: 1rem; }
+
+  h6 {
+    color: $captionColour;
+    font-size: .95rem;
+  }
+
+  // Inline text
+  a {
+    color: $linkColour;
+    text-decoration: underline;
+    text-decoration-color: rgba($linkColour, .45);
+    text-underline-offset: .2em;
+
+    &:hover {
+      color: $hoverColour;
+      text-decoration-color: currentColor;
+    }
+  }
+
+  strong,
+  b {
+    color: $headingColour;
+    font-weight: 700;
+  }
+
+  em,
+  i {
+    font-style: italic;
+  }
+
+  del,
+  s {
+    color: $captionColour;
+  }
+
+  mark {
+    padding: 0 .15em;
+    border-radius: 3px;
+    background: rgba($linkColour, .25);
+    color: $headingColour;
+  }
+
+  small {
+    color: $captionColour;
+    font-size: .85em;
+  }
+
+  sup,
+  sub {
+    font-size: .75em;
+    line-height: 0;
+  }
+
+  // Lists
+  ul,
+  ol {
+    padding-left: 1.6rem;
+  }
+
+  ul { list-style: disc; }
+  ol { list-style: decimal; }
+
+  ul ul,
+  ol ul {
+    list-style: circle;
+  }
+
+  ol ol,
+  ul ol {
+    list-style: lower-alpha;
+  }
+
+  li {
+    margin: .3rem 0;
+  }
+
+  li > ul,
+  li > ol {
+    margin: .3rem 0 0;
+  }
+
+  li > p {
+    margin: 0 0 .5rem;
+  }
+
+  li::marker {
+    color: $captionColour;
+  }
+
+  .task-list-item {
+    list-style: none;
+
+    input {
+      margin: 0 .5rem 0 -1.4rem;
+      vertical-align: middle;
+    }
+  }
+
+  dt {
+    color: $headingColour;
+    font-weight: 700;
+  }
+
+  dd {
+    margin: 0 0 .75rem 1.25rem;
+  }
+
+  // Blocks
+  blockquote {
+    padding: .8rem 1.1rem;
+    border-left: 3px solid $accentColour;
+    border-radius: 0 6px 6px 0;
+    background: rgba($accentColour, .08);
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  hr {
+    height: 1px;
+    margin: 2.5rem 0;
+    border: 0;
+    background: $borderColour;
+  }
+
+  img {
+    border-radius: 6px;
+    vertical-align: middle;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: .92rem;
+  }
+
+  th,
+  td {
+    padding: .5rem .85rem;
+    border: 1px solid $borderColour;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: $surfaceColour;
+    color: $headingColour;
+    font-weight: 700;
+  }
+
+  tbody tr:nth-child(2n) {
+    background: rgba($white, .02);
+  }
+
+  details {
+    padding: .6rem 1rem;
+    border: 1px solid $borderColour;
+    border-radius: 6px;
+
+    > summary {
+      color: $headingColour;
+      cursor: pointer;
+    }
+
+    &[open] > summary {
+      margin-bottom: .6rem;
+    }
+  }
+
+  kbd {
+    display: inline-block;
+    padding: .05em .4em;
+    border: 1px solid $borderColour;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: $surfaceColour;
+    color: $headingColour;
+    font-size: .85em;
+    line-height: 1.4;
+  }
+
+  .footnotes {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid $borderColour;
+    color: $captionColour;
+    font-size: .9rem;
+  }
+
+  // Inline code
+  :not(pre) > code {
+    padding: .12em .4em;
+    border-radius: 4px;
+    background: rgba($inlineCodeColour, .1);
+    color: $inlineCodeColour;
+    font-size: .9em;
+    overflow-wrap: anywhere;
+  }
+
+  a > code {
+    color: inherit;
+  }
+
+  // Code blocks (Rouge output: div.highlighter-rouge > div.highlight > pre.highlight > code)
+  div.highlighter-rouge,
+  figure.highlight {
+    overflow: hidden;
+    border: 1px solid $borderColour;
+    border-radius: 8px;
+    background: $codeBackgroundColour;
+  }
+
+  figure.highlight {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  pre {
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    border-radius: 8px;
+    background: $codeBackgroundColour;
+    color: #e6edf3;
+    font-size: .88rem;
+    line-height: 1.65;
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+    -moz-tab-size: 4;
+    tab-size: 4;
+  }
+
+  div.highlight,
+  .highlight pre,
+  pre.highlight {
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  pre code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    white-space: inherit;
+  }
+
+  // Added by assets/scripts/site.js
+  .code-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .3rem .5rem .3rem 1rem;
+    border-bottom: 1px solid $borderColour;
+    background: $surfaceColour;
+    color: $captionColour;
+    font-size: .75rem;
+    line-height: 1.6;
+  }
+
+  .code-toolbar__lang {
+    letter-spacing: .04em;
+    text-transform: lowercase;
+  }
+
+  .code-toolbar__copy {
+    margin: 0;
+    padding: .1rem .6rem;
+    border-color: $borderColour;
+    border-radius: 4px;
+    background: transparent;
+    color: $captionColour;
+    font-size: .75rem;
+    font-weight: 400;
+
+    &:hover {
+      border-color: lighten($borderColour, 15%);
+      color: $headingColour;
+      filter: none;
+    }
+  }
+
+  // Theme includes used inside Markdown (button, lists, embeds)
+  .button {
+    color: $backgroundColour;
+    text-decoration: none;
+  }
+
+  .list,
+  .nav ul {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .list li,
+  .nav li {
+    margin: 0;
+  }
+
+  .compact-post {
+    color: $bodyColour;
+    text-decoration: none;
+
+    &:hover {
+      color: $linkColour;
+    }
+  }
+
+  iframe {
+    border: 0;
+  }
+}
