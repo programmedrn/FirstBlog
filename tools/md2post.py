@@ -30,7 +30,9 @@ Conversion per file:
   excerpt        empty, or a 1-2 sentence summary from the model with --ai
   feature_text   empty, or "## <title>" plus a one-line tagline from the model with --ai
   feature_image  empty; posts without one use default_feature_image from _config.yml
-  file name      YYYY-MM-DD-<source file name>.md
+  file name      YYYY-MM-DD-<source file name>.md; if the source name already contains the post's date
+                 (2026-07-01, 2026_07_01, 2026.07.01, 20260701, 260701, 26-07-01) it is not repeated,
+                 e.g. 2026-07-01_title.md -> 2026-07-01-title.md. A different date stays in the name.
   body           single line breaks are kept (two trailing spaces), and "{{" / "{%" are escaped
                  so they are shown as written instead of running as Liquid and breaking the build
 Other front matter keys (created, updated, ...) are dropped.
@@ -216,10 +218,17 @@ def protect_liquid(body):
     return LIQUID_OPEN.sub(lambda match: '{{ "' + match.group(0) + '" }}', body), True
 
 
+def remove_own_date(name, day):
+    """Drop the post's own date from a source file name, since the post file name starts with it."""
+    forms = {f"{year}{sep}{day:%m}{sep}{day:%d}" for year in (f"{day:%Y}", f"{day:%y}") for sep in ("-", "_", ".", "")}
+    date_pattern = "|".join(re.escape(form) for form in sorted(forms, key=len, reverse=True))
+    # The date may sit anywhere; separators around it collapse into one, and digits next to it mean it is another number
+    stripped = re.sub(rf"[\s_.-]*(?<!\d)(?:{date_pattern})(?!\d)[\s_.-]*", "-", name)
+    return stripped.strip("-")
+
+
 def slugify(name):
-    name = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", name)
-    slug = re.sub(r"[^\w]+", "-", name.lower()).strip("-")
-    return slug or "post"
+    return re.sub(r"[^\w]+", "-", name.lower()).strip("-")
 
 
 def normalize_ollama_url(url):
@@ -359,8 +368,10 @@ def read_note(path, args, tz):
     if dropped:
         warnings.append("dropped front matter keys: " + ", ".join(dropped))
 
+    stem = os.path.splitext(os.path.basename(path))[0]
+    slug = slugify(remove_own_date(stem, day)) or slugify(title) or "post"
     return {
-        "name": f"{day:%Y-%m-%d}-{slugify(os.path.splitext(os.path.basename(path))[0])}.md",
+        "name": f"{day:%Y-%m-%d}-{slug}.md",
         "title": title,
         "date": date_value,
         "categories": parse_tags(data.get("tags"), args.drop_date_tags),
