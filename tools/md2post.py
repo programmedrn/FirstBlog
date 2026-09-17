@@ -432,6 +432,8 @@ def main():
         parser.error(f"target must be a folder: {args.target}")
     tz = ZoneInfo(args.timezone)
     args.ollama_url = normalize_ollama_url(args.ollama_url)
+    if not args.ai and any(a == "--ollama-url" or a.startswith("--ollama-url=") for a in sys.argv[1:]):
+        parser.error("--ollama-url only matters together with --ai MODEL (e.g. --ai gemma4:12b)")
     if args.ai:
         try:
             check_ollama(args)
