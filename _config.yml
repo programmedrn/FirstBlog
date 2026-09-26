@@ -25,6 +25,7 @@ exclude:
 - .jekyll-cache
 - vendor/ # Local `bundle install --path vendor/bundle`; this list replaces Jekyll's default excludes
 - .bundle/
+- node_modules/ # app sources are copied in built form; never publish dependencies
 - tools/ # Local helper scripts such as tools/md2post.py
 
 # 2. Installed Gems
@@ -150,6 +151,8 @@ navigation_header:
   url: /blog/
 - title: Categories
   url: /categories/
+- title: Apps
+  url: /apps/
 - title: Update
   url: /update/
 - title: Search

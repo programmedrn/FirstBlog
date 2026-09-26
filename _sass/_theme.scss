@@ -479,7 +479,8 @@ a.pagination:hover {
     color: $linkColour;
   }
 
-  time {
+  time,
+  .compact-post__note {
     flex: none;
     color: $captionColour;
     font-size: .8rem;
