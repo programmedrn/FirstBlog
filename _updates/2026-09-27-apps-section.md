@@ -17,3 +17,4 @@ The blog now hosts the small browser tools I built for myself, under the new **A
 They are plain HTML, CSS and JavaScript modules served as files, like the rest of this site.
 Everything happens in the browser: nothing is stored on a server and nothing about a session leaves the page.
 Each tool opens full screen with its own layout, so it stays usable on a phone propped up next to you.
+They use D2Coding, the same font as the rest of the site, served from here rather than from a font service.

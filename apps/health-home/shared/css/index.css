@@ -1,3 +1,25 @@
+/* ═══ FONT ═══ */
+/* D2Coding by NAVER, SIL Open Font License 1.1 (shared/assets/fonts/OFL.txt).
+   First url: the copy the blog already serves; second: this app's own copy when run on its own. */
+@font-face {
+  font-family: 'D2Coding';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('D2Coding'),
+       url('../../../../assets/fonts/D2Coding-Regular.woff2') format('woff2'),
+       url('../assets/fonts/D2Coding-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'D2Coding';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('D2Coding Bold'), local('D2Coding-Bold'),
+       url('../../../../assets/fonts/D2Coding-Bold.woff2') format('woff2'),
+       url('../assets/fonts/D2Coding-Bold.woff2') format('woff2');
+}
+
 /* ═══ DESIGN TOKENS ═══ */
 :root {
   --bg: hsl(225, 20%, 8%);
@@ -28,8 +50,8 @@
   --shadow-lg: 0 8px 40px hsla(0,0%,0%,0.45);
   --shadow-glow-primary: 0 0 24px var(--primary-glow), 0 0 48px var(--primary-glow);
   --shadow-glow-accent: 0 0 24px var(--accent-glow), 0 0 48px var(--accent-glow);
-  --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'D2Coding', 'D2 Coding', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Malgun Gothic', monospace;
+  --font-mono: 'D2Coding', 'D2 Coding', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Malgun Gothic', monospace;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
