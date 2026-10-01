@@ -183,6 +183,15 @@
     vertical-align: middle;
   }
 
+  video,
+  .video-file {
+    display: block;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    border-radius: 6px;
+    background: #000;
+  }
+
   table {
     display: block;
     width: 100%;

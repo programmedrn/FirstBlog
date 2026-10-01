@@ -16,6 +16,15 @@ Options:
   --no-line-breaks  Let consecutive lines join into one paragraph (plain Markdown behaviour).
   --timezone TZ     Timezone for dates without one (default: Asia/Seoul, as in _config.yml).
 
+Images and videos:
+  Local files a note points at (![](shot.png), ![[shot.png]], <img src="...">) are copied next to
+  the post, under assets/insertedImg/<post name>/, and the links are rewritten to the site path.
+  Videos (.mp4 .webm .mov .m4v) become a <video controls> block.
+  --attachments DIR  Extra folder to look in when a file is not next to the note (an Obsidian vault
+                     attachment folder, say).
+  --max-width PX     Shrink wider images while copying (needs Pillow; without it they are copied as is).
+  --feature-first-image  Use the first image of the post as its banner and list thumbnail.
+
 AI fill (optional, needs Ollama running):
   --ai MODEL        Ask a local Ollama model to write excerpt and feature_text, e.g. --ai gemma4:12b
                     (gave the best Korean summaries in testing). Only those two fields come from the
@@ -44,8 +53,11 @@ import html
 import json
 import os
 import re
+import pathlib
+import shutil
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
@@ -61,8 +73,14 @@ H1 = re.compile(r"^#\s+(.+?)\s*#*\s*$")
 BLOCK_START = re.compile(r"^\s*(?:[-*+]\s|\d+[.)]\s|#{1,6}(?:\s|$)|>|\||<|`{3}|~{3}|\$\$|(?:[-*_]\s*){3,}$|=+\s*$)")
 TABLE_DELIMITER = re.compile(r"^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)+\|?\s*$")
 LIQUID_OPEN = re.compile(r"\{[{%]")
-WIKILINK = re.compile(r"!?\[\[[^\]]+\]\]")
-LOCAL_LINK = re.compile(r"!?\[[^\]]*\]\((?!https?://|mailto:|/|#)([^)\s]+)")
+WIKILINK = re.compile(r"(?<!!)\[\[[^\]]+\]\]")
+LOCAL_LINK = re.compile(r"(?<!!)\[[^\]]*\]\((?!https?://|mailto:|/|#)([^)\s]+)")
+MEDIA_MD = re.compile(r"!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?((?:\s+\"[^\"]*\")?)\s*\)")
+MEDIA_WIKI = re.compile(r"!\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
+MEDIA_HTML = re.compile(r"(<(?:img|source|video)\b[^>]*?\ssrc=[\"'])([^\"']+)([\"'])")
+VIDEO_SUFFIXES = {".mp4", ".webm", ".mov", ".m4v"}
+REMOTE_REF = re.compile(r"^(?:[a-z][a-z0-9+.-]*:|//|/|#)")
+BIG_FILE = 1_000_000  # bytes; worth a warning before it lands in the repository
 
 AI_MAX_CHARS = 12000  # longer posts are cut before being sent to the model
 AI_CONTEXT = 16384  # Ollama num_ctx; enough for AI_MAX_CHARS of Korean text plus the prompt
@@ -227,6 +245,110 @@ def remove_own_date(name, day):
     return stripped.strip("-")
 
 
+def site_prefix(target_dir):
+    """Site path prefix for copied media, read from the _config.yml next to the posts folder."""
+    folder = pathlib.Path(target_dir).resolve()
+    for parent in [folder] + list(folder.parents)[:3]:
+        config = parent / "_config.yml"
+        if config.is_file():
+            match = re.search(r"^baseurl:\s*[\"']?([^\"'#\n]*)", config.read_text(encoding="utf-8"), re.M)
+            return (match.group(1).strip().rstrip("/") if match else "")
+    return ""
+
+
+def find_media(reference, note_path, attachments):
+    name = urllib.parse.unquote(reference.split("#")[0].split("?")[0])
+    candidates = [pathlib.Path(note_path).parent / name]
+    if attachments:
+        candidates += [pathlib.Path(attachments) / name, pathlib.Path(attachments) / pathlib.Path(name).name]
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def copy_media(source, folder, max_width, warnings):
+    """Copy one file next to the post, shrinking wide images when asked and possible."""
+    folder.mkdir(parents=True, exist_ok=True)
+    target = folder / source.name
+    if target.exists() and target.stat().st_size == source.stat().st_size:
+        return target
+    stem, suffix = target.stem, target.suffix
+    count = 2
+    while target.exists():
+        target = folder / f"{stem}-{count}{suffix}"
+        count += 1
+
+    if max_width and suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}:
+        try:
+            from PIL import Image
+        except ImportError:
+            warnings.append(f"{source.name}: --max-width needs Pillow (pip install pillow); copied unchanged")
+        else:
+            with Image.open(source) as image:
+                if image.width > max_width:
+                    resized = image.resize((max_width, round(image.height * max_width / image.width)))
+                    resized.save(target)
+                    return target
+    shutil.copy2(source, target)
+    if target.stat().st_size > BIG_FILE:
+        warnings.append(f"{target.name} is {target.stat().st_size // 1000} KB; consider shrinking it before publishing")
+    return target
+
+
+def rewrite_media(body, note_path, post_name, args, warnings):
+    """Copy local images and videos into the site and point the post at their new URLs."""
+    folder = pathlib.Path(args.target).resolve().parent / args.assets / post_name
+    prefix = f"{site_prefix(args.target)}/{args.assets}/{post_name}"
+    first_image = [None]
+
+    def url_for(reference):
+        if REMOTE_REF.match(reference):
+            return None
+        source = find_media(reference, note_path, args.attachments)
+        if not source:
+            warnings.append(f"file not found, left as written: {reference}")
+            return None
+        if args.dry_run:
+            return f"{prefix}/{source.name}"
+        copied = copy_media(source, folder, args.max_width, warnings)
+        url = f"{prefix}/{copied.name}"
+        if copied.suffix.lower() not in VIDEO_SUFFIXES and first_image[0] is None:
+            first_image[0] = url
+        return url
+
+    def video_tag(url, alt):
+        label = f' aria-label="{alt}"' if alt else ""
+        return f'<video class="video-file" controls preload="metadata" playsinline src="{url}"{label}></video>'
+
+    def markdown_image(match):
+        alt, reference, title = match.group(1), match.group(2), match.group(3)
+        url = url_for(reference)
+        if not url:
+            return match.group(0)
+        if pathlib.Path(url).suffix.lower() in VIDEO_SUFFIXES:
+            return video_tag(url, alt)
+        return f"![{alt}]({url}{title})"
+
+    def wiki_embed(match):
+        reference = match.group(1).strip()
+        url = url_for(reference)
+        if not url:
+            return match.group(0)
+        if pathlib.Path(url).suffix.lower() in VIDEO_SUFFIXES:
+            return video_tag(url, "")
+        return f"![]({url})"
+
+    def html_src(match):
+        url = url_for(match.group(2))
+        return match.group(0) if not url else f"{match.group(1)}{url}{match.group(3)}"
+
+    body = MEDIA_WIKI.sub(wiki_embed, body)
+    body = MEDIA_MD.sub(markdown_image, body)
+    body = MEDIA_HTML.sub(html_src, body)
+    return body, first_image[0]
+
+
 def slugify(name):
     return re.sub(r"[^\w]+", "-", name.lower()).strip("-")
 
@@ -356,10 +478,16 @@ def read_note(path, args, tz):
     if not args.no_line_breaks:
         lines = keep_line_breaks(lines)
     body = "\n".join(lines).strip("\n") + "\n"
+
+    stem = os.path.splitext(os.path.basename(path))[0]
+    slug = slugify(remove_own_date(stem, day)) or slugify(title) or "post"
+    post_name = f"{day:%Y-%m-%d}-{slug}"
+    body, first_image = rewrite_media(body, path, post_name, args, warnings)
+
     if WIKILINK.search(body):
-        warnings.append("contains [[wiki links]]; they are not converted")
+        warnings.append("contains [[wiki links]] that are not file embeds; they are left as written")
     for target in sorted(set(LOCAL_LINK.findall(body))):
-        warnings.append(f"relative link or image not copied: {target}")
+        warnings.append(f"relative link not copied: {target}")
     body, escaped = protect_liquid(body)
     if escaped:
         warnings.append("escaped {{ and {% so they are shown as text instead of running as Liquid")
@@ -368,10 +496,9 @@ def read_note(path, args, tz):
     if dropped:
         warnings.append("dropped front matter keys: " + ", ".join(dropped))
 
-    stem = os.path.splitext(os.path.basename(path))[0]
-    slug = slugify(remove_own_date(stem, day)) or slugify(title) or "post"
     return {
-        "name": f"{day:%Y-%m-%d}-{slug}.md",
+        "name": f"{post_name}.md",
+        "first_image": first_image,
         "title": title,
         "date": date_value,
         "categories": parse_tags(data.get("tags"), args.drop_date_tags),
@@ -381,7 +508,7 @@ def read_note(path, args, tz):
     }
 
 
-def render_post(note, excerpt="", tagline=""):
+def render_post(note, excerpt="", tagline="", feature_image=""):
     front = ["---", f"title: {json.dumps(note['title'], ensure_ascii=False)}", f"date: {note['date']}"]
     if note["categories"]:
         front.append("categories:")
@@ -392,7 +519,8 @@ def render_post(note, excerpt="", tagline=""):
         front += ["feature_text: |", f"  ## {html.escape(note['title'], quote=False)}", f"  {tagline}"]
     else:
         front.append("feature_text:")
-    front += ["feature_image:", "---", ""]
+    front.append(f"feature_image: {json.dumps(feature_image, ensure_ascii=False)}" if feature_image else "feature_image:")
+    front += ["---", ""]
     return "\n".join(front) + "\n" + note["body"]
 
 
@@ -423,6 +551,13 @@ def main():
     parser.add_argument("--drop-date-tags", action="store_true", help="skip tags like 2026-07-24 or 2026-07")
     parser.add_argument("--no-line-breaks", action="store_true", help="do not keep single line breaks")
     parser.add_argument("--timezone", default="Asia/Seoul", help="timezone for dates (default: Asia/Seoul)")
+    parser.add_argument("--assets", default="assets/insertedImg",
+                        help="folder under the site root for copied images and videos")
+    parser.add_argument("--attachments", metavar="DIR", help="extra folder to look in for files a note points at")
+    parser.add_argument("--max-width", type=int, default=0, metavar="PX",
+                        help="shrink wider images while copying (needs Pillow)")
+    parser.add_argument("--feature-first-image", action="store_true",
+                        help="use the first image of the post as its banner and list thumbnail")
     parser.add_argument("--ai", metavar="MODEL", help="fill excerpt and feature_text with this Ollama model")
     parser.add_argument("--ollama-url", default=os.environ.get("OLLAMA_HOST", ""),
                         help="Ollama server (default: $OLLAMA_HOST or http://127.0.0.1:11434)")
@@ -470,7 +605,7 @@ def main():
             except AIError as error:
                 failures += 1
                 note["warnings"].append(f"ai: {error}; excerpt and feature_text left empty")
-        content = render_post(note, excerpt, tagline)
+        content = render_post(note, excerpt, tagline, note["first_image"] if args.feature_first_image else "")
 
         print(f"{'would write' if args.dry_run else 'write'}  {source} -> {output}")
         print(f"       categories: {', '.join(note['categories']) or '(none)'}")
