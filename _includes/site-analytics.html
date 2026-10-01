@@ -1,8 +1,19 @@
 <!-- Google Analytics 4, loaded only when google_analytics is set in _config.yml -->
+<script>
+  // Someone who turned stats off in the notice stays off: gtag.js checks this flag before sending.
+  try {
+    if (localStorage.getItem('analytics-opt-out') === '1') {
+      window['ga-disable-{{ site.google_analytics }}'] = true;
+    }
+  } catch (error) { /* storage blocked; fall through */ }
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', '{{ site.google_analytics }}');
+  gtag('config', '{{ site.google_analytics }}', {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
 </script>

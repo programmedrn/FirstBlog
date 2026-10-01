@@ -641,6 +641,71 @@ a.pagination:hover {
 }
 
 
+// Analytics notice
+.has-notice {
+  padding-bottom: 13rem;
+
+  @include breakpoint($break-md) {
+    padding-bottom: 8rem;
+  }
+}
+
+.notice {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 60;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem 1.5rem;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1rem 1.15rem;
+  border: 1px solid $borderColour;
+  border-radius: 10px;
+  background: $surfaceColour;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+
+.notice__body {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.notice__title {
+  margin: 0 0 .25rem;
+  color: $headingColour;
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.notice__text {
+  margin: 0;
+  color: $bodyColour;
+  font-size: .82rem;
+  line-height: 1.6;
+
+  strong {
+    color: $headingColour;
+  }
+}
+
+.notice__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+
+  .button {
+    margin: 0;
+    padding: .4rem .85rem;
+    font-size: .8rem;
+  }
+}
+
+
 // Footer
 .footer {
   border-top: 1px solid $borderColour;

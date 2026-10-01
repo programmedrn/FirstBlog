@@ -1,0 +1,16 @@
+{% if site.google_analytics %}
+<aside class="notice" data-analytics-notice hidden aria-label="방문 통계 안내">
+  <div class="notice__body">
+    <p class="notice__title">방문 통계 안내</p>
+    <p class="notice__text">
+      어떤 글이 읽히는지 보려고 <strong>읽은 페이지 주소, 유입 경로, 기기·브라우저 종류, 도시 단위의 대략적인 지역, 머문 시간</strong>을 Google Analytics로 모읍니다.
+      이름·이메일 같은 개인정보나 광고용 정보는 모으지 않습니다.
+    </p>
+  </div>
+  <div class="notice__actions">
+    <a class="button  button--ghost" href="{{ '/privacy/' | relative_url }}">자세히</a>
+    <button class="button  button--ghost" type="button" data-analytics-optout>수집 끄기</button>
+    <button class="button" type="button" data-analytics-dismiss>확인</button>
+  </div>
+</aside>
+{% endif %}

@@ -166,6 +166,8 @@ navigation_header:
   url: /search/
 
 navigation_footer:
+- title: 수집하는 정보
+  url: /privacy/
 - title: Created by David Darnes
   url: https://darn.es
 
