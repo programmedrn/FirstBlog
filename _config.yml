@@ -110,11 +110,11 @@ defaults:
 
 # 7. Site settings
 encoding: utf-8 # Make sure the encoding is right
-lang: en-GB # Set the site language
+lang: ko-KR # Set the site language (used for <html lang> and og:locale)
 title: "FirstBlog" # Site name or title, also used in jekyll-seo-tag
 logo: "/assets/logos/logo.svg" # Site logo, also used in jekyll-seo-tag
 default_feature_image: "/assets/default-feature.svg" # Banner and list thumbnail for posts whose feature_image is empty
-description: "What I'm thinking these days...." # Site description and default description, also used in jekyll-seo-tag
+description: "개발 공부 기록, 코딩테스트 풀이, 그리고 직접 만들어 쓰는 작은 도구들" # Site description and default description, also used in jekyll-seo-tag
 url: "https://programmedrn.github.io" # Site url, also used in jekyll-seo-tag
 baseurl: "/FirstBlog"
 repo: "https://github.com/programmedrn/"
@@ -124,6 +124,12 @@ date_format: "%-d %B %Y" # Blog post date formatting using placeholder formattin
 # google_analytics_anonymize_ip: ""
 # service_worker: false # Will turn off the service worker if set to false
 short_name: "FirstB" # The web application short name, defaults to the site title
+# Search engine verification. Paste the code each service gives you, then uncomment.
+# Google: Search Console > add property > HTML tag method, copy the content="..." value
+# Bing: Bing Webmaster Tools > verify > meta tag
+# webmaster_verifications:
+#   google: ""
+#   bing: ""
 css_inline: true # Will insert all styles into a single <style> block in the <head> element and remove the style <link> reference
 manifest: # Browser UI / installed web app colours, keep in sync with _sass/_theme-dark-blue-orange.scss
   theme_color: "#0b141b"
