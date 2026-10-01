@@ -1,12 +1,8 @@
-<!-- Global site tag (gtag.js) - Google Analytics -->
+<!-- Google Analytics 4, loaded only when google_analytics is set in _config.yml -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', '{{ site.google_analytics }}');
-  gtag('config', '{{ site.google_analytics }}', {
-    'anonymize_ip': {{ site.google_analytics_anonymize_ip | default: "true" }}
-  });
 </script>

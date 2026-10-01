@@ -120,8 +120,9 @@ baseurl: "/FirstBlog"
 repo: "https://github.com/programmedrn/"
 # disqus: "alembic-1" # Blog post comments, uncomment the option and set the site ID from your Disqus account
 date_format: "%-d %B %Y" # Blog post date formatting using placeholder formatting
-# google_analytics: ""
-# google_analytics_anonymize_ip: ""
+# Visitor stats: paste the GA4 measurement ID (looks like G-XXXXXXXXXX) and uncomment.
+# Nothing is loaded while this stays commented out.
+# google_analytics: "G-XXXXXXXXXX"
 # service_worker: false # Will turn off the service worker if set to false
 short_name: "FirstB" # The web application short name, defaults to the site title
 # Search engine verification. Paste the code each service gives you, then uncomment.
