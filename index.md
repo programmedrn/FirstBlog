@@ -1,5 +1,5 @@
 ---
-title: First Blog
+title: 개발 기록과 코딩테스트 풀이
 layout: home
-excerpt: "The latest post on First Blog"
+excerpt: "Java 코딩테스트 풀이와 개발 공부 기록, 그리고 직접 만들어 쓰는 타이머 같은 작은 도구들을 올립니다."
 ---
