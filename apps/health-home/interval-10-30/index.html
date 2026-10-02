@@ -7,6 +7,14 @@
   <title>10 x (10s/30s) — Health Home</title>
   <meta name="description" content="10 rounds of 10s prep / 30s work">
   <link rel="stylesheet" href="../shared/css/index.css">
+
+  <!-- Installable as its own app: home screen icon, standalone window, offline use -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#101218">
+  <link rel="apple-touch-icon" href="./icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="10/30">
 </head>
 
 <body>
@@ -20,6 +28,13 @@
   </audio>
 
   <script type="module" src="./js/interval1030.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(function () { /* offline support is optional */ });
+      });
+    }
+  </script>
 </body>
 
 </html>

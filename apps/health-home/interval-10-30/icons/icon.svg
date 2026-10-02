@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>10 x (10s/30s)</title>
+  <rect width="64" height="64" rx="14" fill="#101218"/>
+  <g fill="none" stroke-width="8" transform="rotate(-90 32 32)">
+    <!-- the 30s work stretch -->
+    <circle cx="32" cy="32" r="20" stroke="#12cf90"/>
+    <!-- the 10s prep stretch: a quarter of the ring -->
+    <circle cx="32" cy="32" r="20" stroke="#f69e23" stroke-dasharray="31.42 94.25"/>
+  </g>
+</svg>

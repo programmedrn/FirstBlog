@@ -602,3 +602,8 @@ ul { list-style: none; }
   .deck-card { max-width: 320px; }
   .deck-card__reps { font-size: 5.5rem; }
 }
+
+/* Installed as an app: there is no blog to go back to */
+@media (display-mode: standalone) {
+  .page-header__back { display: none; }
+}
