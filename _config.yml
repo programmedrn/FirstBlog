@@ -78,6 +78,8 @@ collections:
   updates: # Site change log, listed on the Update page (update.html)
     output: true
     permalink: /update/:name/
+  repos: # Links to my repositories, listed on the Repos page (repos.html). One file per repo in _repos/
+    output: false
 
 # 6. Jekyll collections settings
 defaults:
@@ -158,6 +160,8 @@ navigation_header:
   url: /blog/
 - title: Categories
   url: /categories/
+- title: Repos
+  url: /repos/
 - title: Apps
   url: /apps/
 - title: Update

@@ -795,3 +795,37 @@ a.pagination:hover {
 .form {
   margin-bottom: 1.25rem;
 }
+
+// Repos page: title, one-line description and tags on the left, link host on the right
+.repo {
+  align-items: flex-start;
+}
+
+.repo__body {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  min-width: 0;
+}
+
+.repo__desc {
+  color: $captionColour;
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
+.repo__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin-top: .15rem;
+}
+
+.repo__tag {
+  padding: 0 .45rem;
+  border: 1px solid $borderColour;
+  border-radius: 999px;
+  color: $captionColour;
+  font-size: .7rem;
+  line-height: 1.7;
+}

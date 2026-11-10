@@ -1,0 +1,39 @@
+---
+title: Repos
+permalink: /repos/
+excerpt: "Things I have built, with a line on each"
+---
+
+{% comment %}
+  Each entry is a file in _repos/. See _repos/README.md for how to add one.
+  Sorted by `order` (smaller first, entries without it go last), then by title.
+{% endcomment %}
+{% assign repos = site.repos | sort: "title" | sort: "order", "last" %}
+
+<p class="article__lead">직접 만든 것들입니다. 누르면 저장소로 이동해요. 자세한 내용은 각 저장소의 README에 있습니다.</p>
+
+{% if repos.size > 0 %}
+<ul class="list  list--compact  list--repos">
+  {% for repo in repos %}
+    {% if repo.link contains "://" %}
+      {% assign href = repo.link %}
+      {% assign host = repo.link | split: "://" | last | split: "/" | first | remove: "www." %}
+    {% else %}
+      {% assign href = repo.link | relative_url %}
+      {% assign host = "this blog" %}
+    {% endif %}
+    <li class="item">
+      <a class="compact-post  repo" href="{{ href }}" target="_blank" rel="noopener">
+        <span class="repo__body">
+          <span class="compact-post__title">{{ repo.title }}</span>
+          {% if repo.description %}<span class="repo__desc">{{ repo.description }}</span>{% endif %}
+          {% if repo.tags %}<span class="repo__tags">{% for tag in repo.tags %}<span class="repo__tag">{{ tag }}</span>{% endfor %}</span>{% endif %}
+        </span>
+        <span class="compact-post__note">{{ host }} ↗</span>
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No repositories listed yet.</p>
+{% endif %}
