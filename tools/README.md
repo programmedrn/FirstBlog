@@ -49,3 +49,12 @@ tools/sync-health-home.sh /other/path
 
 Copies the static files only: no `node_modules`, no `Origin/` (it holds a private key), and no font
 folder, since the tools use the site's own D2Coding copy.
+
+## post-editor — write, publish and upload posts in the browser
+
+```bash
+tools/post-editor/run.sh     # or double-click tools/post-editor/post-editor.bat on Windows
+```
+
+Save keeps a local draft, Publish writes `_posts/`, Upload commits `_posts` + `assets/insertedImg` and pushes.
+See [post-editor/README.md](post-editor/README.md).

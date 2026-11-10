@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>블로그 글 편집기</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <h1>✍️ 블로그 글 편집기</h1>
+      <button id="themeToggle" class="icon-btn" title="테마 전환">🌙</button>
+    </div>
+
+    <div class="sidebar-actions">
+      <button id="newBtn" class="btn primary">+ 새 글</button>
+      <button id="uploadBtn" class="btn upload" title="_posts 변경 사항을 commit 후 push">⬆ 업로드 <span id="pendingCount" class="count">0</span></button>
+    </div>
+
+    <input id="searchInput" class="search" type="text" placeholder="제목·카테고리·요약 검색…" />
+
+    <div class="lists">
+      <h2 class="list-title">초안 <span id="draftCount"></span></h2>
+      <div id="draftList" class="entry-list"></div>
+      <h2 class="list-title">발행됨 <span id="postCount"></span></h2>
+      <div id="postList" class="entry-list"></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="emptyState" class="empty-state">
+      <p>왼쪽에서 글을 고르거나 <strong>+ 새 글</strong>로 시작하세요.</p>
+      <p class="dim">저장 → 초안 · 발행 → <code>_posts</code>에 기록 · 업로드 → git commit &amp; push</p>
+    </div>
+
+    <article id="viewPane" class="view-pane" hidden>
+      <header class="view-header">
+        <div class="view-meta">
+          <div class="meta-row"><span id="viewKind" class="pill kind"></span><span id="viewDate" class="pill"></span><span id="viewTags" class="tag-list"></span></div>
+          <h2 id="viewTitle"></h2>
+          <p id="viewExcerpt" class="excerpt"></p>
+        </div>
+        <div class="view-actions">
+          <button id="editBtn" class="btn">수정</button>
+          <button id="viewPublishBtn" class="btn primary">발행</button>
+          <button id="deleteBtn" class="btn danger">초안 삭제</button>
+        </div>
+      </header>
+      <img id="viewFeature" class="feature" alt="" hidden />
+      <div id="viewContent" class="md"></div>
+      <div id="viewFile" class="file-path"></div>
+    </article>
+
+    <form id="editPane" class="edit-pane" hidden autocomplete="off">
+      <div class="edit-row">
+        <input id="fTitle" type="text" placeholder="제목" required />
+        <input id="fDate" type="date" />
+      </div>
+      <input id="fCategories" type="text" placeholder="카테고리 (쉼표로 구분, 예: 알고리즘, 공부)" />
+      <details id="metaDetails" class="meta-details">
+        <summary>요약 · 배너 · 대표 이미지</summary>
+        <label class="meta-field">
+          <span class="meta-label">요약 <span class="dim">글 목록·검색에 보이는 한두 문장</span><span id="excerptCount" class="meta-count"></span></span>
+          <textarea id="fExcerpt" class="grow-text" rows="2" placeholder="이 글에서 다루는 내용을 한두 문장으로"></textarea>
+        </label>
+        <label class="meta-field">
+          <span class="meta-label">배너 부제 <span class="dim">글 위 배너에서 제목 아래 한 줄</span><span id="taglineCount" class="meta-count"></span></span>
+          <textarea id="fTagline" class="grow-text" rows="1" placeholder="한 줄 소개"></textarea>
+        </label>
+        <div class="meta-field meta-inline">
+          <span class="meta-label">대표 이미지</span>
+          <input id="fFeature" type="text" placeholder="비우면 기본 이미지" />
+          <button type="button" id="firstImageBtn" class="btn small">본문 첫 이미지</button>
+        </div>
+      </details>
+
+      <div id="editToolbar" class="editor-toolbar">
+        <button type="button" class="tb-btn" data-action="bold" title="굵게 (Ctrl+B)"><b>B</b></button>
+        <button type="button" class="tb-btn" data-action="italic" title="기울임 (Ctrl+I)"><i>I</i></button>
+        <button type="button" class="tb-btn" data-action="strike" title="취소선 (Ctrl+Shift+S)"><s>S</s></button>
+        <span class="tb-divider"></span>
+        <button type="button" class="tb-btn" data-action="h1" title="제목 1">H1</button>
+        <button type="button" class="tb-btn" data-action="h2" title="제목 2">H2</button>
+        <button type="button" class="tb-btn" data-action="h3" title="제목 3">H3</button>
+        <span class="tb-divider"></span>
+        <button type="button" class="tb-btn" data-action="quote" title="인용">❝</button>
+        <button type="button" class="tb-btn" data-action="code" title="인라인 코드">&lt;/&gt;</button>
+        <button type="button" class="tb-btn" data-action="codeblock" title="코드 블록">{ }</button>
+        <button type="button" class="tb-btn" data-action="link" title="링크 (Ctrl+K)">🔗</button>
+        <button type="button" class="tb-btn" data-action="image" title="이미지·영상 넣기 (붙여넣기·끌어다 놓기도 가능)">🖼</button>
+        <button type="button" class="tb-btn" data-action="page" title="로컬 HTML 페이지를 블로그에 올리고 링크 넣기">📄 HTML</button>
+        <input id="mediaInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,video/mp4,video/webm" multiple hidden />
+        <span class="tb-divider"></span>
+        <button type="button" class="tb-btn" data-action="ul" title="글머리 목록">•—</button>
+        <button type="button" class="tb-btn" data-action="ol" title="번호 목록">1.—</button>
+        <span class="tb-spacer"></span>
+        <label class="tb-check" title="켜면 편집창에서 친 줄바꿈이 블로그에서도 그대로 줄바꿈됩니다"><input id="fLineBreaks" type="checkbox" checked /> 줄바꿈 유지</label>
+        <div class="seg" role="group" aria-label="보기 방식">
+          <button type="button" class="seg-btn" data-mode="edit">편집</button>
+          <button type="button" class="seg-btn active" data-mode="split">나란히</button>
+          <button type="button" class="seg-btn" data-mode="preview">미리보기</button>
+        </div>
+      </div>
+
+      <div id="editorArea" class="editor-area split">
+        <textarea id="fBody" placeholder="마크다운으로 작성하세요. 이미지는 Ctrl+V 붙여넣기나 끌어다 놓기로 넣을 수 있어요."></textarea>
+        <div id="preview" class="md preview"></div>
+      </div>
+
+      <div class="edit-actions">
+        <button type="submit" class="btn primary">저장 <kbd>Ctrl+S</kbd></button>
+        <button type="button" id="publishBtn" class="btn accent">저장 후 발행</button>
+        <button type="button" id="cancelBtn" class="btn ghost">닫기</button>
+        <span id="saveState" class="save-state"></span>
+      </div>
+    </form>
+  </main>
+</div>
+
+<dialog id="uploadDialog" class="dialog">
+  <form method="dialog" class="dialog-body" id="uploadForm">
+    <h3>업로드 (git commit &amp; push)</h3>
+    <p id="uploadInfo" class="dim"></p>
+    <ul id="changeList" class="change-list"></ul>
+    <label class="field">커밋 메시지
+      <input id="commitMsg" type="text" placeholder="비우면 Post Uploading: 글 제목들" />
+    </label>
+    <pre id="uploadLog" class="upload-log" hidden></pre>
+    <div class="dialog-actions">
+      <button type="button" id="doUploadBtn" class="btn primary">커밋하고 올리기</button>
+      <button value="close" class="btn ghost">닫기</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="pageDialog" class="dialog">
+  <form method="dialog" class="dialog-body" id="pageForm">
+    <h3>HTML 페이지 올리기</h3>
+    <p class="dim">로컬 HTML과 그 안에서 쓰는 이미지·영상·CSS·JS를 저장소의 <code>pages/&lt;폴더&gt;/</code>로 복사하고, 글에 링크를 넣습니다.
+      업로드하면 블로그에서도 같은 주소로 열립니다.</p>
+    <div id="pageDrop" class="drop-zone">
+      <label class="field">HTML 파일 경로
+        <span class="path-row">
+          <input id="pageSource" type="text" placeholder="D:\Study\notes\index.html 또는 /mnt/d/... (탐색기에서 Shift+우클릭 → 경로로 복사)" />
+          <button type="button" id="pageBrowse" class="btn small" hidden>찾아보기…</button>
+        </span>
+      </label>
+    </div>
+    <div class="edit-row">
+      <label class="field grow">폴더 이름 (비우면 파일 이름으로)
+        <input id="pageName" type="text" placeholder="예: segment-tree-visualizer" />
+      </label>
+      <label class="field grow">링크 글자 (비우면 페이지 제목)
+        <input id="pageLinkText" type="text" placeholder="예: 시각화 페이지 열기" />
+      </label>
+    </div>
+    <label class="tb-check"><input id="pageWhole" type="checkbox" /> HTML이 있는 폴더 전체 복사 (스크립트가 나중에 불러오는 파일까지 필요할 때)</label>
+    <pre id="pageResult" class="upload-log" hidden></pre>
+    <div class="dialog-actions">
+      <button type="button" id="pageImportBtn" class="btn primary">가져와서 링크 넣기</button>
+      <button value="close" class="btn ghost">닫기</button>
+    </div>
+    <details class="page-list-wrap">
+      <summary>이미 올린 페이지 (<span id="pageCount">0</span>) — 눌러서 링크만 넣기</summary>
+      <ul id="pageList" class="change-list page-list"></ul>
+    </details>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="vendor/marked.umd.js"></script>
+<script src="vendor/hljs.bundle.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+node_modules/
+release/
+# 빌드할 때 이 PC의 WSL 배포판·저장소 경로로 만들어진다
+defaults.json
+# 시작 그림 확인용 미리보기
+assets/splash-preview.png

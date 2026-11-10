@@ -1,0 +1,45 @@
+{
+  "name": "blog-post-editor-tray",
+  "version": "1.0.0",
+  "private": true,
+  "description": "블로그 글 편집기 Windows 트레이 앱 (WSL 안의 편집기 서버를 띄우고 창으로 보여줌)",
+  "main": "main.js",
+  "scripts": {
+    "icons": "node scripts/make-icons.js",
+    "splash": "electron scripts/make-splash.js",
+    "start": "electron .",
+    "install:win": "bash scripts/install-win.sh",
+    "dist:win": "node scripts/make-icons.js && node scripts/write-defaults.js && electron-builder --win portable"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "io.github.programmedrn.post-editor",
+    "productName": "블로그 글 편집기",
+    "asar": false,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "defaults.json",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "portable": {
+      "artifactName": "blog-post-editor.exe",
+      "splashImage": "assets/splash.bmp"
+    },
+    "executableName": "BlogPostEditor"
+  }
+}

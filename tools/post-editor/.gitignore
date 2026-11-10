@@ -1,0 +1,4 @@
+# 초안과 초안용 이미지는 로컬에만 둔다(발행하면 _posts와 assets/insertedImg로 옮겨짐)
+drafts/
+# 루트 .gitignore의 vendor/ 규칙에서 편집기 라이브러리는 빼낸다
+!public/vendor/
