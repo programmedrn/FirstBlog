@@ -1,0 +1,7 @@
+{
+  "fixed MLP 784-256-256-10": [
+    "runs/2026-10-01_stage0_mlp_mnist/seed_0",
+    "runs/2026-10-01_stage0_mlp_mnist/seed_1",
+    "runs/2026-10-01_stage0_mlp_mnist/seed_2"
+  ]
+}

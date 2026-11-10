@@ -1,0 +1,52 @@
+{
+  "dense max/0%": [
+    "runs/2026-10-01_s1_dense_max/seed_0",
+    "runs/2026-10-01_s1_dense_max/seed_1",
+    "runs/2026-10-01_s1_dense_max/seed_2"
+  ],
+  "Taylor/50%": [
+    "runs/2026-10-01_s1_taylor_50/seed_0",
+    "runs/2026-10-01_s1_taylor_50/seed_1",
+    "runs/2026-10-01_s1_taylor_50/seed_2"
+  ],
+  "Taylor/70%": [
+    "runs/2026-10-01_s1_taylor_70/seed_0",
+    "runs/2026-10-01_s1_taylor_70/seed_1",
+    "runs/2026-10-01_s1_taylor_70/seed_2"
+  ],
+  "Taylor/90%": [
+    "runs/2026-10-01_s1_taylor_90/seed_0",
+    "runs/2026-10-01_s1_taylor_90/seed_1",
+    "runs/2026-10-01_s1_taylor_90/seed_2"
+  ],
+  "magnitude/50%": [
+    "runs/2026-10-01_s1_magnitude_50/seed_0",
+    "runs/2026-10-01_s1_magnitude_50/seed_1",
+    "runs/2026-10-01_s1_magnitude_50/seed_2"
+  ],
+  "magnitude/70%": [
+    "runs/2026-10-01_s1_magnitude_70/seed_0",
+    "runs/2026-10-01_s1_magnitude_70/seed_1",
+    "runs/2026-10-01_s1_magnitude_70/seed_2"
+  ],
+  "magnitude/90%": [
+    "runs/2026-10-01_s1_magnitude_90/seed_0",
+    "runs/2026-10-01_s1_magnitude_90/seed_1",
+    "runs/2026-10-01_s1_magnitude_90/seed_2"
+  ],
+  "dense final-size/50%": [
+    "runs/2026-10-01_s1_dense_small_50/seed_0",
+    "runs/2026-10-01_s1_dense_small_50/seed_1",
+    "runs/2026-10-01_s1_dense_small_50/seed_2"
+  ],
+  "dense final-size/70%": [
+    "runs/2026-10-01_s1_dense_small_70/seed_0",
+    "runs/2026-10-01_s1_dense_small_70/seed_1",
+    "runs/2026-10-01_s1_dense_small_70/seed_2"
+  ],
+  "dense final-size/90%": [
+    "runs/2026-10-01_s1_dense_small_90/seed_0",
+    "runs/2026-10-01_s1_dense_small_90/seed_1",
+    "runs/2026-10-01_s1_dense_small_90/seed_2"
+  ]
+}

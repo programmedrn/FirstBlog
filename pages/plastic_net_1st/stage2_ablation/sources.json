@@ -1,0 +1,32 @@
+{
+  "dense max": [
+    "runs/2026-10-02_s2_dense_max/seed_3",
+    "runs/2026-10-02_s2_dense_max/seed_4",
+    "runs/2026-10-02_s2_dense_max/seed_5"
+  ],
+  "prune only (50%)": [
+    "runs/2026-10-02_s2_prune_50/seed_3",
+    "runs/2026-10-02_s2_prune_50/seed_4",
+    "runs/2026-10-02_s2_prune_50/seed_5"
+  ],
+  "merge only": [
+    "runs/2026-10-02_s2_merge_only/seed_3",
+    "runs/2026-10-02_s2_merge_only/seed_4",
+    "runs/2026-10-02_s2_merge_only/seed_5"
+  ],
+  "grow only (0.02, no growth fired)": [
+    "runs/2026-10-02_s2_grow_only/seed_3",
+    "runs/2026-10-02_s2_grow_only/seed_4",
+    "runs/2026-10-02_s2_grow_only/seed_5"
+  ],
+  "grow only (0.06, diagnostic)": [
+    "runs/2026-10-02_s2diag_grow_only_t006/seed_3",
+    "runs/2026-10-02_s2diag_grow_only_t006/seed_4",
+    "runs/2026-10-02_s2diag_grow_only_t006/seed_5"
+  ],
+  "all (50%)": [
+    "runs/2026-10-02_s2_all_50/seed_3",
+    "runs/2026-10-02_s2_all_50/seed_4",
+    "runs/2026-10-02_s2_all_50/seed_5"
+  ]
+}

@@ -1,0 +1,2 @@
+method,n_seeds,seeds,test_acc_mean,test_acc_std,active_params_mean,active_params_std,train_flops_mean,wall_clock_sec_mean,wall_clock_sec_std
+fixed MLP 784-256-256-10,3,0 1 2,0.9772,0.000435889894354083,269322.0,0.0,363417600000.0,2.3729357336666603,0.06251694367316038
