@@ -25,6 +25,31 @@ const PAGES_DIR = path.join(REPO, PAGES_REL);
 const PAGES_INDEX = path.join(DRAFTS_DIR, 'pages.json'); // 폴더 → 원본 경로 (로컬 기록용)
 const COMMIT_PATHS = ['_posts', ASSETS_REL, PAGES_REL];
 
+// 블로그 모양 보기에 쓰는 사이트 정보 (_config.yml에서 필요한 값만 읽는다)
+function readSiteInfo() {
+  let text = '';
+  try { text = fs.readFileSync(path.join(REPO, '_config.yml'), 'utf8'); } catch (_) { /* 기본값 */ }
+  const val = (key) => {
+    const m = text.match(new RegExp(`^${key}:[ \\t]*(?:"([^"]*)"|'([^']*)'|([^#\\n]*))`, 'm'));
+    return m ? (m[1] ?? m[2] ?? m[3] ?? '').trim() : '';
+  };
+  const nav = [];
+  const at = text.search(/^navigation_header:/m);
+  if (at !== -1) {
+    let cur = null;
+    for (const line of text.slice(at).split('\n').slice(1)) {
+      if (/^[A-Za-z_][\w-]*:/.test(line)) break; // 다음 설정 키
+      if (/^\s*#/.test(line)) continue;
+      let m;
+      if ((m = line.match(/^\s*-\s*title:\s*["']?([^"'#\n]*?)["']?\s*$/))) { cur = { title: m[1], url: '' }; nav.push(cur); } else if (cur && (m = line.match(/^\s*url:\s*["']?([^"'#\n]*?)["']?\s*$/))) cur.url = m[1];
+    }
+  }
+  return {
+    title: val('title'), url: val('url'), logo: val('logo'),
+    defaultFeatureImage: val('default_feature_image'), dateFormat: val('date_format'), nav,
+  };
+}
+
 const BASEURL = (() => {
   try {
     const m = fs.readFileSync(path.join(REPO, '_config.yml'), 'utf8').match(/^baseurl:\s*["']?([^"'#\n]*)/m);
@@ -242,6 +267,7 @@ function readPost(name) {
     categories: toList(data.categories || data.tags),
     excerpt: String(data.excerpt || '').replace(/\s*\n\s*/g, ' ').trim(),
     tagline: splitFeatureText(data.feature_text, title),
+    featureText: String(data.feature_text || ''),
     featureImage: data.feature_image || '',
     lineBreaks,
     body: cleanBody,
@@ -547,7 +573,14 @@ async function handle(req, res) {
     setTimeout(() => process.exit(0), 100);
     return undefined;
   }
-  if (p === '/api/config') return send(res, 200, { baseurl: BASEURL, repo: REPO, today: todayKST() });
+  if (p === '/api/config') return send(res, 200, { baseurl: BASEURL, repo: REPO, today: todayKST(), site: readSiteInfo() });
+  if (p === '/api/blog-style.css' && method === 'GET') {
+    try {
+      return send(res, 200, await blogCss(), 'text/css; charset=utf-8');
+    } catch (err) {
+      return send(res, 503, `/* ${String(err.message || err).replace(/\*\//g, '')} */`, 'text/css; charset=utf-8');
+    }
+  }
 
   if (p === '/api/posts' && method === 'GET') {
     const status = await gitStatus();
@@ -621,10 +654,63 @@ const server = http.createServer((req, res) => {
   });
 });
 
+// ---------- 블로그 CSS (블로그 모양 보기용) ----------
+// 블로그는 _sass/alembic.scss를 GitHub Pages에서 CSS로 바꿔 쓴다. 같은 파일을 sass로 컴파일해
+// drafts/에 캐시하고, _sass가 바뀌면 다시 만든다. sass는 처음 한 번 npx가 내려받는다.
+const SASS_DIR = path.join(REPO, '_sass');
+const CSS_CACHE = path.join(DRAFTS_DIR, 'blog-style.css');
+const CSS_STAMP = path.join(DRAFTS_DIR, 'blog-style.stamp');
+const SASS_VERSION = '1.83.4';
+let cssJob = null;
+
+function sassStamp() {
+  const parts = [];
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const f = path.join(dir, e.name);
+      if (e.isDirectory()) walk(f);
+      else if (/\.s[ac]ss$/.test(e.name)) { const st = fs.statSync(f); parts.push(`${path.relative(SASS_DIR, f)}:${st.size}:${Math.round(st.mtimeMs)}`); }
+    }
+  };
+  walk(SASS_DIR);
+  return `${SASS_VERSION}|${parts.join('|')}`;
+}
+
+function blogCss() {
+  const stamp = sassStamp();
+  const cached = () => (fs.existsSync(CSS_CACHE) ? fs.readFileSync(CSS_CACHE, 'utf8') : null);
+  try {
+    if (fs.readFileSync(CSS_STAMP, 'utf8') === stamp && cached() != null) return Promise.resolve(cached());
+  } catch (_) { /* 새로 만든다 */ }
+  if (!cssJob) {
+    cssJob = new Promise((resolve, reject) => {
+      fs.mkdirSync(DRAFTS_DIR, { recursive: true });
+      const tmp = `${CSS_CACHE}.tmp`;
+      const npx = path.join(path.dirname(process.execPath), process.platform === 'win32' ? 'npx.cmd' : 'npx');
+      execFile(fs.existsSync(npx) ? npx : 'npx',
+        ['--yes', `sass@${SASS_VERSION}`, '--no-source-map', '--quiet', `--load-path=${SASS_DIR}`, path.join(SASS_DIR, 'alembic.scss'), tmp],
+        { cwd: REPO, timeout: 180000, env: { ...process.env, PATH: `${path.dirname(process.execPath)}${path.delimiter}${process.env.PATH || ''}` } },
+        (err, stdout, stderr) => {
+          cssJob = null;
+          if (err) {
+            const old = cached();
+            if (old != null) return resolve(old); // 예전 CSS라도 보여 준다
+            return reject(new Error(`블로그 CSS를 만들지 못했습니다: ${(stderr || err.message).trim().slice(0, 300)}`));
+          }
+          fs.renameSync(tmp, CSS_CACHE);
+          fs.writeFileSync(CSS_STAMP, stamp);
+          resolve(cached());
+        });
+    });
+  }
+  return cssJob;
+}
+
 // 같은 PC의 브라우저에서만 쓰도록 localhost에만 연다(WSL에서도 Windows 브라우저로 접속 가능).
 if (require.main === module) server.listen(PORT, '127.0.0.1', () => {
   console.log(`블로그 글 편집기: http://localhost:${PORT}`);
   console.log(`저장소: ${REPO}`);
+  blogCss().catch((err) => console.error(err.message)); // 첫 보기 때 기다리지 않게 미리 만들어 둔다
 });
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
@@ -634,4 +720,4 @@ server.on('error', (err) => {
   throw err;
 });
 
-module.exports = { parseFrontMatter, keepLineBreaks, stripLineBreaks, protectLiquid, unprotectLiquid, slugify };
+module.exports = { readSiteInfo, parseFrontMatter, keepLineBreaks, stripLineBreaks, protectLiquid, unprotectLiquid, slugify };

@@ -6,7 +6,7 @@
     draftCount: $('#draftCount'), postCount: $('#postCount'),
     emptyState: $('#emptyState'), viewPane: $('#viewPane'), editPane: $('#editPane'),
     viewKind: $('#viewKind'), viewDate: $('#viewDate'), viewTags: $('#viewTags'), viewTitle: $('#viewTitle'),
-    viewExcerpt: $('#viewExcerpt'), viewFeature: $('#viewFeature'), viewContent: $('#viewContent'), viewFile: $('#viewFile'),
+    viewExcerpt: $('#viewExcerpt'), viewBlog: $('#viewBlog'), viewFeature: $('#viewFeature'), viewContent: $('#viewContent'), viewFile: $('#viewFile'),
     editBtn: $('#editBtn'), viewPublishBtn: $('#viewPublishBtn'), deleteBtn: $('#deleteBtn'),
     fTitle: $('#fTitle'), fDate: $('#fDate'), fCategories: $('#fCategories'), fExcerpt: $('#fExcerpt'),
     fTagline: $('#fTagline'), fFeature: $('#fFeature'), fLineBreaks: $('#fLineBreaks'), fBody: $('#fBody'),
@@ -212,12 +212,17 @@
     els.viewDate.textContent = data.date;
     els.viewTags.innerHTML = (data.categories || []).map((c) => `<span class="pill">${escapeHtml(c)}</span>`).join('');
     els.viewTitle.textContent = data.title || '(제목 없음)';
-    els.viewExcerpt.textContent = data.excerpt || '';
+    $('#viewExcerptText').textContent = data.excerpt || '';
     els.viewExcerpt.hidden = !data.excerpt;
-    els.viewFeature.hidden = !data.featureImage;
-    if (data.featureImage) els.viewFeature.src = data.featureImage;
-    els.viewContent.innerHTML = renderMarkdown(data.body, data.lineBreaks);
-    linksInNewWindow(els.viewContent);
+    if (viewMode === 'blog') {
+      blogView.render(els.viewBlog, data);
+    } else {
+      els.viewBlog.replaceChildren();
+      els.viewFeature.hidden = !data.featureImage;
+      if (data.featureImage) els.viewFeature.src = previewLiquid(data.featureImage);
+      els.viewContent.innerHTML = renderMarkdown(data.body, data.lineBreaks);
+      linksInNewWindow(els.viewContent);
+    }
     els.viewFile.textContent = kind === 'post'
       ? `_posts/${data.postFile}`
       : (data.postFile ? `발행하면 _posts/${data.postFile} 를 덮어씁니다` : '아직 발행되지 않은 초안');
@@ -226,6 +231,27 @@
     showPane('view');
     renderLists();
   }
+
+  // 보기 방식: 블로그 모양(블로그 CSS로 그린 iframe) / 간단히(편집기 스타일)
+  const blogView = window.createBlogView({ config: () => state.config, renderMarkdown, previewLiquid, escapeHtml });
+  let viewMode = 'blog';
+  try { viewMode = localStorage.getItem('post-editor-view') || 'blog'; } catch (_) { /* 기본값 */ }
+  function setViewMode(mode) {
+    viewMode = mode;
+    els.viewPane.dataset.view = mode;
+    document.querySelectorAll('.view-seg .seg-btn').forEach((b) => b.classList.toggle('active', b.dataset.view === mode));
+    try { localStorage.setItem('post-editor-view', mode); } catch (_) { /* 무시 */ }
+  }
+  setViewMode(viewMode);
+  document.querySelectorAll('.view-seg .seg-btn').forEach((btn) => btn.addEventListener('click', () => {
+    setViewMode(btn.dataset.view);
+    if (state.current) renderView(state.current.kind, state.current.data);
+  }));
+  els.viewBlog.addEventListener('blogstyle-error', () => {
+    toast('블로그 CSS를 만들지 못해 블로그 모양으로 보여 줄 수 없습니다. 간단히 보기로 바꿉니다.', 'error');
+    setViewMode('simple');
+    if (state.current) renderView(state.current.kind, state.current.data);
+  });
 
   async function openDraft(id) {
     try { renderView('draft', await api(`/api/drafts/${id}`)); } catch (err) { toast(err.message, 'error'); }
@@ -381,10 +407,13 @@
   window.addEventListener('resize', debounce(growMeta, 100));
 
   // ---------- 미리보기 ----------
+  // 미리보기에서 그림을 눌러 크기·정렬을 바꾸고, 끌어서 한 줄로 묶는다(imageLayout.js).
+  const imageLayout = window.createImageLayout({ textarea: els.fBody, preview: els.preview, baseurl: () => state.config.baseurl });
   const updatePreview = debounce(() => {
     if (els.editorArea.classList.contains('edit')) return;
     els.preview.innerHTML = renderMarkdown(els.fBody.value, els.fLineBreaks.checked);
     linksInNewWindow(els.preview);
+    imageLayout.afterRender();
   }, 120);
   els.editPane.addEventListener('input', () => { state.dirty = true; els.saveState.textContent = '저장 안 됨'; updatePreview(); });
   els.fLineBreaks.addEventListener('change', updatePreview);
@@ -402,6 +431,7 @@
 
   // 편집창을 스크롤하면 미리보기도 비슷한 위치로 따라간다.
   els.fBody.addEventListener('scroll', () => {
+    if (imageLayout.busy()) return;
     const ta = els.fBody;
     const ratio = ta.scrollTop / Math.max(1, ta.scrollHeight - ta.clientHeight);
     els.preview.scrollTop = ratio * (els.preview.scrollHeight - els.preview.clientHeight);

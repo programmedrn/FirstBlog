@@ -38,9 +38,14 @@
     <article id="viewPane" class="view-pane" hidden>
       <header class="view-header">
         <div class="view-meta">
-          <div class="meta-row"><span id="viewKind" class="pill kind"></span><span id="viewDate" class="pill"></span><span id="viewTags" class="tag-list"></span></div>
-          <h2 id="viewTitle"></h2>
-          <p id="viewExcerpt" class="excerpt"></p>
+          <div class="meta-row"><span id="viewKind" class="pill kind"></span><span id="viewDate" class="pill simple-only"></span><span id="viewTags" class="tag-list simple-only"></span>
+            <div class="seg view-seg" role="group" aria-label="보기 방식">
+              <button type="button" class="seg-btn" data-view="blog" title="실제 블로그와 같은 스타일로 보기">블로그 모양</button>
+              <button type="button" class="seg-btn" data-view="simple">간단히</button>
+            </div>
+          </div>
+          <h2 id="viewTitle" class="simple-only"></h2>
+          <p id="viewExcerpt" class="excerpt"><span class="dim blog-only">목록 요약 · </span><span id="viewExcerptText"></span></p>
         </div>
         <div class="view-actions">
           <button id="editBtn" class="btn">수정</button>
@@ -48,8 +53,9 @@
           <button id="deleteBtn" class="btn danger">초안 삭제</button>
         </div>
       </header>
-      <img id="viewFeature" class="feature" alt="" hidden />
-      <div id="viewContent" class="md"></div>
+      <div id="viewBlog" class="blog-view blog-only"></div>
+      <img id="viewFeature" class="feature simple-only" alt="" hidden />
+      <div id="viewContent" class="md simple-only"></div>
       <div id="viewFile" class="file-path"></div>
     </article>
 
@@ -173,6 +179,8 @@
 
 <script src="vendor/marked.umd.js"></script>
 <script src="vendor/hljs.bundle.js"></script>
+<script src="imageLayout.js"></script>
+<script src="blogView.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
