@@ -740,6 +740,39 @@ a.pagination:hover {
 }
 
 
+// Images sized and arranged in the post editor (tools/post-editor)
+img.img-left,
+img.img-center,
+img.img-right {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+img.img-center {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+img.img-right {
+  margin-left: auto;
+}
+
+.img-row {
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 0 1.25rem;
+
+  > img {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0;
+  }
+}
+
+
 // Media includes
 .figure {
   margin: 0 0 1.25rem;
