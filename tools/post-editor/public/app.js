@@ -82,7 +82,15 @@
     }
     return `<pre><code class="hljs${used ? ` language-${used}` : ''}">${value}</code></pre>\n`;
   }
-  marked.use({ gfm: true, renderer: { code: ({ text, lang }) => renderCode(text, lang) } });
+  marked.use({
+    gfm: true,
+    renderer: { code: ({ text, lang }) => renderCode(text, lang) },
+    tokenizer: {
+      // <img>로 시작하는 줄은 블로그(kramdown)처럼 문단 속 그림으로 읽는다.
+      // marked 기본값은 빈 줄까지를 HTML 덩어리로 보아, 바로 아랫줄의 ![..](..)가 글자로 나왔다.
+      html(src) { return /^ {0,3}<img\b/i.test(src) ? undefined : false; },
+    },
+  });
 
   // Jekyll에서만 의미가 있는 Liquid 구문을 미리보기용 HTML로 바꾼다.
   function previewLiquid(src) {
